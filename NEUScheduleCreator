@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NEU Schedule Creator
 // @namespace    http://tampermonkey.net/
-// @version      0.2.2
+// @version      0.2.3
 // @description  Go to banner -> registration history -> switch from schedule calendar to schedule details at the bottom then press "t". A new page will open with your schedule formatted
 // @author       Big Beans
 // @match        https://nubanner.neu.edu/StudentRegistrationSsb/ssb/registrationHistory/registrationHistory
@@ -393,10 +393,10 @@ hr+hr {
         var meetingDays=[];//odds->even->odd->even
         let i=0;
         for (let j=0;j<classes.length;j++){
-            courseNumbers[j]=odds[i].innerHTML.match(numberRegex)[1];
+            courseNumbers[j]=odds[i].querySelector('[data-property="subjectCourseSectionNumber"]').innerHTML;
             courseSections[j]=odds[i].innerHTML[odds[i].innerHTML.indexOf(courseNumbers[j])+courseNumbers[j].length+2]+odds[i].innerHTML[odds[i].innerHTML.indexOf(courseNumbers[j])+courseNumbers[j].length+3];
             if (i<evens.length){
-                courseNumbers[j+1]=evens[i].innerHTML.match(numberRegex)[1];
+                courseNumbers[j+1]=evens[i].querySelector('[data-property="subjectCourseSectionNumber"]').innerHTML
                 courseSections[j+1]=evens[i].innerHTML[evens[i].innerHTML.indexOf(courseNumbers[j+1])+courseNumbers[j+1].length+2]+evens[i].innerHTML[evens[i].innerHTML.indexOf(courseNumbers[j+1])+courseNumbers[j+1].length+3];
                 j++;
             }
@@ -410,6 +410,10 @@ hr+hr {
         }
         for (let i=0;i<courses.length;i++){
             credits+=parseInt(document.querySelectorAll('[xe-field="creditHours"]')[i+1].innerHTML);
+        }
+
+        for (let i=0;i<courseSections.length;i++){
+            courseSections[i]="";
         }
         var coursesFinal = createObjects(courses,courseNumbers,courseSections,meetingTimes,meetingDays,courseHalls,colors);
         makeSchedule(coursesFinal);
