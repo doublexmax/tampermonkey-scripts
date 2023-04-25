@@ -1,0 +1,40 @@
+// ==UserScript==
+// @name         Medium Word Counter
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Actively count number of words during Medium story writing
+// @author       Big Beans
+// @match        https://medium.com/p/*
+// @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    function wordCount() {
+    
+        let text = document.getElementsByClassName("section section--body section--first section--last")[0].innerText;
+
+        let result = text.replace("\n", " ");
+
+        let count = result.split(" ").length;
+
+        document.getElementById("word-counter").innerText = "Number of Words: " + count.toString();
+    };
+
+    function loadWordCounter() {
+        var ele = document.getElementsByClassName("section section--body section--first section--last")[0];
+        ele.tabindex = "0";
+
+        var wordCountDiv = document.createElement('div');
+        wordCountDiv.style = "margin-bottom: 15px;margin-left : 15%;width: 100%;height: 20px;position: fixed;bottom: 0; font-size: 22px;";
+        wordCountDiv.id = "word-counter";
+
+        document.getElementsByTagName('body')[0].appendChild(wordCountDiv);
+
+        document.addEventListener("keydown", wordCount);
+    };
+
+    document.addEventListener("DOMContentLoaded", loadWordCounter());
+})();
